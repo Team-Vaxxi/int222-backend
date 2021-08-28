@@ -1,7 +1,7 @@
 services:
     backend:
       build: .
-      image: ghcr.io/yakruay/int222-backend:prd
+      image: ghcr.io/team-vaxxi/int222-backend:prd
       volumes:
         - ./backendImages:/src/images
 
