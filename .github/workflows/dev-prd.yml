@@ -1,0 +1,69 @@
+name: int222-backend
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set env
+      run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/main" ] && echo 'prd' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Make .env file
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        envkey_DB_URL: ${{ secrets.${{ env.ENV_NAME }}_DB_URL }}
+        envkey_DB_USERNAME: ${{ secrets.${{ env.ENV_NAME }}_DB_USERNAME }}
+        envkey_DB_PASSWORD: ${{ secrets.${{ env.ENV_NAME }}_DB_PASSWORD }}
+        file_name: .env
+
+    - name: Login to Github Docker Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: ghcr.io/team-vaxxi/int222-backend:${{ env.ENV_NAME }}
+
+    - name: Publish compose file
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOSTNAME }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ./docker-compose.${{ env.ENV_NAME }}.yml
+        target: ~/int222-related/backend/${{ env.ENV_NAME }}/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set env
+      run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/main" ] && echo 'prd' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
+      
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run application
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOSTNAME }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml pull
+          docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml up --build -d
