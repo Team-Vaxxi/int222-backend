@@ -50,6 +50,9 @@ jobs:
         envkey_DB_USERNAME: ${{ secrets[env.DB_USERNAME] }}
         envkey_DB_PASSWORD: ${{ secrets[env.DB_PASSWORD] }}
         file_name: .env
+    
+    - name: Check env
+      run: cat .env
 
     - name: Login to Github Docker Registry
       uses: docker/login-action@v1
