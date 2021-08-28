@@ -29,6 +29,7 @@ jobs:
       DB_PASSWORD: ${{ steps.prepare-step.outputs.DB_PASSWORD }}
 
   build:
+    needs: prepare
     runs-on: ubuntu-latest
     env:
       DB_URL: ${{ needs.prepare.outputs.DB_URL }}
