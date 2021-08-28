@@ -1,0 +1,11 @@
+services:
+    backend:
+      build: .
+      image: ghcr.io/yakruay/int222-backend:dev
+      volumes:
+        - ./backendImages:/src/images
+
+networks:
+    default:
+        external:
+            name: int222-network
