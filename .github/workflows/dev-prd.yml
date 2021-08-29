@@ -1,0 +1,94 @@
+name: int222-backend
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set env
+      run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/main" ] && echo 'prd' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
+    
+    - name: Prepare Outputs
+      id: prepare-step
+        # Sets this step's outputs, that later on will be exported as the job's outputs
+      run: |
+        echo "::set-output name=DB_URL::${ENV_NAME}_DB_URL";
+        echo "::set-output name=DB_USERNAME::${ENV_NAME}_DB_USERNAME";
+        echo "::set-output name=DB_PASSWORD::${ENV_NAME}_DB_PASSWORD";
+
+    outputs:
+      DB_URL: ${{ steps.prepare-step.outputs.DB_URL }}
+      DB_USERNAME: ${{ steps.prepare-step.outputs.DB_USERNAME }}
+      DB_PASSWORD: ${{ steps.prepare-step.outputs.DB_PASSWORD }}
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    env:
+      DB_URL: ${{ needs.prepare.outputs.DB_URL }}
+      DB_USERNAME: ${{ needs.prepare.outputs.DB_USERNAME }}
+      DB_PASSWORD: ${{ needs.prepare.outputs.DB_PASSWORD }}
+
+    steps:
+    - name: Set env
+      run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/main" ] && echo 'prd' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Make .env file
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        envkey_DB_URL: ${{ secrets[env.DB_URL] }}
+        envkey_DB_USERNAME: ${{ secrets[env.DB_USERNAME] }}
+        envkey_DB_PASSWORD: ${{ secrets[env.DB_PASSWORD] }}
+        file_name: .env
+
+    - name: Login to Github Docker Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: ghcr.io/team-vaxxi/int222-backend:${{ env.ENV_NAME }}
+
+    - name: Publish compose file
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOSTNAME }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ./docker-compose.${{ env.ENV_NAME }}.yml
+        target: ~/int222-related/backend/${{ env.ENV_NAME }}/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set env
+      run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/main" ] && echo 'prd' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
+      
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run application
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOSTNAME }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml pull
+          docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml up -d

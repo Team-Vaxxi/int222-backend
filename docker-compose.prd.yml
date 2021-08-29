@@ -1,0 +1,11 @@
+services:
+    backend:
+      build: .
+      image: ghcr.io/team-vaxxi/int222-backend:prd
+      volumes:
+        - ./backendImages:/src/images
+
+networks:
+    default:
+        external:
+            name: int222-network
