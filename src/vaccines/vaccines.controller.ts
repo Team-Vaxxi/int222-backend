@@ -2,7 +2,7 @@ import { VaccinesService } from './vaccines.service';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Vaccines } from './vaccines.entity';
 
-@Controller('/vaccines')
+@Controller('vaccines')
 export class VaccinesController {
 
     constructor(private vaccinesService: VaccinesService) {
