@@ -43,13 +43,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Make .env file
-      uses: SpicyPizza/create-envfile@v1
-      with:
-        envkey_DB_URL: ${{ secrets[env.DB_URL] }}
-        envkey_DB_USERNAME: ${{ secrets[env.DB_USERNAME] }}
-        envkey_DB_PASSWORD: ${{ secrets[env.DB_PASSWORD] }}
-        file_name: .env
+    # - name: Make .env file
+    #   uses: SpicyPizza/create-envfile@v1
+    #   with:
+    #     envkey_DB_URL: ${{ secrets[env.DB_URL] }}
+    #     envkey_DB_USERNAME: ${{ secrets[env.DB_USERNAME] }}
+    #     envkey_DB_PASSWORD: ${{ secrets[env.DB_PASSWORD] }}
+    #     file_name: .env
+
+    - name: Create env file
+      run: |
+        touch .env
+        echo DB_URL=${{ secrets[env.DB_URL] }} >> .env
+        echo DB_USERNAME=${{ secrets[env.DB_USERNAME] }} >> .env
+        echo DB_PASSWOR=${{ secrets[env.DB_PASSWORD] }} >> .env
     
     - name: Check .env
       run: |
