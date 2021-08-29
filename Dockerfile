@@ -3,6 +3,5 @@ WORKDIR /app
 COPY package*.json ./
 RUN yarn
 COPY ./ .
-COPY ./.env ./.env
 RUN yarn build
 CMD ["yarn", "start:prod"]
