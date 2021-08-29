@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { VaccinesService } from './vaccines.service';
 import { VaccinesController } from './vaccines.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Vaccines } from './vaccines.entity';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Vaccines])],
+  exports:[TypeOrmModule],
   controllers: [VaccinesController],
   providers: [VaccinesService]
 })
