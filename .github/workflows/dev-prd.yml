@@ -54,7 +54,8 @@ jobs:
       with:
         host: ${{ secrets.SSH_HOSTNAME }}
         username: ${{ secrets.SSH_USERNAME }}
-        key: .env
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: .env
         target: ~/int222-related/backend/${{ env.ENV_NAME }}/
 
     - name: Login to Github Docker Registry
