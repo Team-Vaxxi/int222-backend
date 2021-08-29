@@ -20,10 +20,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.DATABASE_URL,
+      host: process.env.DB_URL,
       port: 3306,
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
       database: 'Vaxxi',
       entities: [
         'dist/**/*.entity{.ts,.js}',
