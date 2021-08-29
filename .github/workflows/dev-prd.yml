@@ -43,29 +43,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # - name: Make .env file
-    #   uses: SpicyPizza/create-envfile@v1
-    #   with:
-    #     envkey_DB_URL: ${{ secrets[env.DB_URL] }}
-    #     envkey_DB_USERNAME: ${{ secrets[env.DB_USERNAME] }}
-    #     envkey_DB_PASSWORD: ${{ secrets[env.DB_PASSWORD] }}
-    #     file_name: .env
-    
-    - name: Create env file
-      run: |
-        touch .env
-        echo DB_URL=${{ secrets[env.DB_URL] }} >> .env
-        echo DB_USERNAME=${{ secrets[env.DB_USERNAME] }} >> .env
-        echo DB_PASSWOR=${{ secrets[env.DB_PASSWORD] }} >> .env
+    - name: Make .env file
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        envkey_DB_URL: ${{ secrets[env.DB_URL] }}
+        envkey_DB_USERNAME: ${{ secrets[env.DB_USERNAME] }}
+        envkey_DB_PASSWORD: ${{ secrets[env.DB_PASSWORD] }}
+        file_name: .env
     
     - name: Check .env
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SSH_HOSTNAME }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: .env
-        target: ~/int222-related/backend/${{ env.ENV_NAME }}/
+      run: |
+        ls -la
 
 
     - name: Login to Github Docker Registry
