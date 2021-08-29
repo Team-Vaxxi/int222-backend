@@ -14,21 +14,27 @@ export class VaccinesController {
         return await this.vaccinesService.findAll();
     }
 
+    @Get("/:id")
+    async getVaccine(@Param("id") id:number): Promise<Vaccines>{
+        return await this.vaccinesService.findOne(id);
+    }
 
+    // todo: deal with genereated PK
     @Post()
-    async addVaccine(@Body("name") name: string,
+    async addVaccine(
+        // @Body("idVaccine") idVaccine: number,
+        @Body("name") name: string,
         @Body("description") description: string,
         @Body("price") price: number,
-        @Body("image") image:string) {
-        return this.vaccinesService.addVaccine({ name, description, price, image});
+        @Body("image") image: string) {
+        return await this.vaccinesService.addVaccine({ name, description, price, image});
 
     }
 
+    // todo: check methods 
     @Delete("/:id")
-    deleteVaccineById(@Param("id") id: string) {
-        console.log(`id: ${id}`);
-        return `id: ${id}`
-
+    async removeVaccineById(@Param("id") id: number) {
+        return await this.vaccinesService.removeVaccine(id);
     }
 
 }
