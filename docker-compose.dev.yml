@@ -4,6 +4,7 @@ services:
       image: ghcr.io/team-vaxxi/int222-backend:dev
       volumes:
         - ./backendImages:/src/images
+        - ./.env:/app/.env
 
 networks:
     default:

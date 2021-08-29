@@ -49,7 +49,7 @@ jobs:
         echo DB_USERNAME=${{ secrets[env.DB_USERNAME] }} >> .env
         echo DB_PASSWORD=${{ secrets[env.DB_PASSWORD] }} >> .env
 
-    - name: Publish .env file
+    - name: Send .env file to host
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.SSH_HOSTNAME }}
@@ -99,4 +99,3 @@ jobs:
         script: |
           docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml pull
           docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml up -d
-          docker cp ~/int222-related/backend/${{ env.ENV_NAME }}/.env ${{ env.ENV_NAME }}_backend_1:/app/.env
