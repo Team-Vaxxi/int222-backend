@@ -40,16 +40,15 @@ jobs:
     - name: Set env
       run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/main" ] && echo 'prd' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
 
-    - name: Create env file
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create .env file
       run: |
-        touch .env
         echo DB_URL=${{ secrets[env.DB_URL] }} >> .env
         echo DB_USERNAME=${{ secrets[env.DB_USERNAME] }} >> .env
         echo DB_PASSWOR=${{ secrets[env.DB_PASSWORD] }} >> .env
     
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
     - name: Check .env
       run: |
         ls -la
