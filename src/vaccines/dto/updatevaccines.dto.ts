@@ -1,6 +1,4 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { CreateVaccineDto } from "./createvaccines.dto";
+import { IsNotEmpty, IsNumber, IsNumberString, IsString } from "class-validator";
 
 export class UpdateVaccineDto {
     @IsString()
@@ -10,7 +8,7 @@ export class UpdateVaccineDto {
     @IsString()
     @IsNotEmpty()
     description: string;
-    
+    // can't used IsNumber() except IsNumberString()
     @IsNumber()
     @IsNotEmpty()
     price: number;

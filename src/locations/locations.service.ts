@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Locations } from './locations.entity';
@@ -11,9 +11,15 @@ export class LocationsService {
     ) { }
     
     async findAll(): Promise<Locations[]> {
-        const locations = await this.locationsRepository.find();
-        console.log(locations);
-
-        return locations
+        return await this.locationsRepository.find();
     }
+
+    async findOne(locationId: number): Promise<Locations> {
+        const location = await this.locationsRepository.findOne(locationId);
+        if (!location) {
+            throw new NotFoundException(`Location #${locationId} not found`);
+        }
+        return location;
+    }
+        
 }

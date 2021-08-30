@@ -29,7 +29,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         'dist/**/*.entity{.ts,.js}',
       ],
       // autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     })
     ,
     UsersModule,

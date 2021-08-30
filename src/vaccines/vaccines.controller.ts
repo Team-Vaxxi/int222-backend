@@ -16,7 +16,7 @@ export class VaccinesController {
         return await this.vaccinesService.findAll();
     }
 
-    @Get("/:id")
+    @Get("/:vaccineId")
     async getVaccineById(@Param("vaccineId") vaccineId:number): Promise<Vaccines>{
         return await this.vaccinesService.findOne(vaccineId);
     }

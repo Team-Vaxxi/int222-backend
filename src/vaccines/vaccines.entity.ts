@@ -1,5 +1,4 @@
-import { Locations } from "src/locations/locations.entity";
-import { Column, Entity, JoinColumn, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'Vaccines'})
 export class Vaccines {
@@ -18,8 +17,9 @@ export class Vaccines {
     @Column()
     image: string;
 
-    @ManyToMany(() => Locations)
-    @JoinColumn()
-    locations: Locations[]
+    // Write relation entity
+    // @ManyToMany(() => Locations)
+    // @JoinColumn()
+    // locations: Locations[]
 
 }

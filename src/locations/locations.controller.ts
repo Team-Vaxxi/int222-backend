@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
+import { Vaccines } from 'src/vaccines/vaccines.entity';
 import { Locations } from './locations.entity';
 import { LocationsService } from './locations.service';
 
@@ -11,5 +12,10 @@ export class LocationsController {
     @Get()
     async getAllLocations(): Promise<Locations[]> {
         return await this.locationsService.findAll();
+    }
+
+    @Get("/:locationId")
+    async getLocationById(@Param("locationId") locationId:number): Promise<Locations> {
+        return await this.locationsService.findOne(locationId);
     }
 }

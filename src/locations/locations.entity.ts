@@ -7,4 +7,6 @@ export class Locations {
 
     @Column()
     name: string;
+
+    // Write relation entity
 }

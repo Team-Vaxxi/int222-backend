@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsNumberString, IsString } from "class-validator";
 
 export class CreateVaccineDto {
     @IsString()
@@ -8,7 +8,7 @@ export class CreateVaccineDto {
     @IsString()
     @IsNotEmpty()
     description: string;
-    
+    // can't used IsNumber() except IsNumberString()
     @IsNumber()
     @IsNotEmpty()
     price: number;
@@ -17,5 +17,3 @@ export class CreateVaccineDto {
     @IsNotEmpty()
     image: string;
 }
-
-// export type UpdateVaccineDTO = Partial<CreateVaccineDto>
