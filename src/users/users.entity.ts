@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { type } from "os";
+import { Locations } from "src/locations/locations.entity";
+import { Vaccines } from "src/vaccines/vaccines.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "Users" })
 export class Users {
@@ -18,7 +21,7 @@ export class Users {
     address: string;
 
     @Column()
-    dob: Date;
+    dob: string;
 
     @Column()
     tel: string;
@@ -34,6 +37,14 @@ export class Users {
 
     // optional
     isOrder: string;
+
+    @OneToOne(type => Vaccines)
+    Vaccines_idVaccine: Vaccines;
+
+    @OneToOne(type => Locations)
+    Locations_idLocation: Locations;
+//     @OneToMany(type => Photo, photo => photo.user)
+//   photos: Photo[];
 
     // Vaccines_idVaccine FK
     // Locations_idLocation FK

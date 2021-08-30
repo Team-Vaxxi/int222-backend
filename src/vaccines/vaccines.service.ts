@@ -1,40 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectID, Repository } from 'typeorm';
+import { CreateVaccineDto } from './dto/createvaccines.dto';
+import { Repository } from 'typeorm';
 import { Vaccines } from './vaccines.entity';
+import { UpdateVaccineDto } from './dto/updatevaccines.dto';
 
 @Injectable()
 export class VaccinesService {
     constructor(
         @InjectRepository(Vaccines)
         private vaccinesRepository: Repository<Vaccines>,
-    ) { }
-    
-    async findAll(): Promise<Vaccines[]> {
-        const vaccines =  await this.vaccinesRepository.find();
-        // console.log(vaccines);
+    ) {}
 
-        return vaccines;
+    async findAll(): Promise<Vaccines[]> {
+        return await this.vaccinesRepository.find();
     }
 
-    async findOne(id: number): Promise<Vaccines> {
-        const vaccine = await this.vaccinesRepository.findOne(id);
-        // console.log(vaccine);
-        
+    async findOne(vaccineId: number): Promise<Vaccines> {
+        const vaccine = await this.vaccinesRepository.findOne(vaccineId);
+        if (!vaccine) {
+            throw new NotFoundException(`Vaccine #${vaccineId} not found`);
+        }
         return vaccine;
     }
 
-
-    async addVaccine(vaccineDTO: Partial<Vaccines>): Promise<Vaccines> {
-        const vaccine =  this.vaccinesRepository.create(vaccineDTO);
-        console.log(vaccine);
-
-        return this.vaccinesRepository.save(vaccine);
+    async addVaccine(vaccineDto: CreateVaccineDto): Promise<Vaccines> {
+        return this.vaccinesRepository.save(this.vaccinesRepository.create(vaccineDto));
     }
 
-    async removeVaccine(id: number) {
-        console.log(`deleteVaccine id: ${id}`);
-        
-        return this.vaccinesRepository.delete(id);
+    async updateVaccine(vaccineId: number, updateVaccineDto: UpdateVaccineDto) {
+        const vaccine = await this.vaccinesRepository.findOne(vaccineId);
+        if (!vaccine) {
+            throw new NotFoundException(`Vaccine #${vaccineId} not found`);
+        }
+        return this.vaccinesRepository.update(vaccineId, updateVaccineDto);
+    }
+
+    async removeVaccine(vaccineId: number) {
+        const vaccine = await this.vaccinesRepository.findOne(vaccineId);
+        if (!vaccine) {
+            throw new NotFoundException(`Vaccine #${vaccineId} not found`);
+        }
+        return this.vaccinesRepository.delete(vaccineId);
     }
 }

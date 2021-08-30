@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Locations } from "src/locations/locations.entity";
+import { Column, Entity, JoinColumn, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({name: "Vaccines"})
+@Entity({ name: 'Vaccines'})
 export class Vaccines {
     @PrimaryGeneratedColumn()
     idVaccine: number;
@@ -16,5 +17,9 @@ export class Vaccines {
 
     @Column()
     image: string;
+
+    @ManyToMany(() => Locations)
+    @JoinColumn()
+    locations: Locations[]
 
 }
