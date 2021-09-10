@@ -15,7 +15,7 @@ export class VaccinesService {
     async findAll(): Promise<Vaccines[]> {
         // fetch user that handle this vaccine
         // return await this.vaccinesRepository.find({relations:['user']});
-        
+
         return await this.vaccinesRepository.find();
     }
 
