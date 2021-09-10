@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Vaccines } from "src/vaccines/vaccines.entity";
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "Locations" })
 export class Locations {
@@ -9,4 +10,7 @@ export class Locations {
     name: string;
 
     // Write relation entity
+    //     @ManyToMany(() => Vaccines)
+    //     vaccines: Vaccines;
+    // 
 }

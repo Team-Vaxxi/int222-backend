@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Locations } from "src/locations/locations.entity";
+import { Vaccines } from "src/vaccines/vaccines.entity";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "Users" })
 export class Users {
@@ -35,15 +37,15 @@ export class Users {
     @Column()
     isOrder: string;
 
-    // Write relation entity
-    // @OneToOne(type => Vaccines)
-    // Vaccines_idVaccine: Vaccines;
+    
+    @OneToOne(() => Vaccines, { eager: true, onUpdate: 'CASCADE', onDelete: 'CASCADE'})
+    @JoinColumn({ name: 'Vaccines_idVaccine', referencedColumnName: 'idVaccine'})
+    vaccine?: Vaccines;
 
-    // @OneToOne(type => Locations)
-    // Locations_idLocation: Locations;
-    //     @OneToMany(type => Photo, photo => photo.user)
-    //   photos: Photo[];
+    @OneToOne(() => Locations, { eager: true, onUpdate: 'CASCADE', onDelete: 'CASCADE'})
+    @JoinColumn({ name: 'Locations_idLocation', referencedColumnName: 'idLocation'})
+    location?: Locations;
 
-    // Vaccines_idVaccine FK
-    // Locations_idLocation FK
+
+
 }
