@@ -9,7 +9,7 @@ on:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Set env
@@ -30,7 +30,7 @@ jobs:
 
   build:
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       DB_URL: ${{ needs.prepare.outputs.DB_URL }}
       DB_USERNAME: ${{ needs.prepare.outputs.DB_USERNAME }}
@@ -45,18 +45,10 @@ jobs:
 
     - name: Create .env file
       run: |
+        touch .env
         echo DB_URL=${{ secrets[env.DB_URL] }} >> .env
         echo DB_USERNAME=${{ secrets[env.DB_USERNAME] }} >> .env
         echo DB_PASSWORD=${{ secrets[env.DB_PASSWORD] }} >> .env
-
-    - name: Send .env file to host
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SSH_HOSTNAME }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: .env
-        target: ~/int222-related/backend/${{ env.ENV_NAME }}/
 
     - name: Login to Github Docker Registry
       uses: docker/login-action@v1
@@ -68,6 +60,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
+        context: .
         push: true
         tags: ghcr.io/team-vaxxi/int222-backend:${{ env.ENV_NAME }}
 
@@ -82,13 +75,10 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: Set env
       run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/main" ] && echo 'prd' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
-      
-    - name: Checkout code
-      uses: actions/checkout@v2
 
     - name: Run application
       uses: appleboy/ssh-action@master
