@@ -9,11 +9,12 @@ export class CreateVaccineDto {
     @IsNotEmpty()
     description: string;
     // can't used IsNumber() except IsNumberString()
-    @IsNumber()
+    // @IsNumber()
     @IsNotEmpty()
     price: number;
     
-    @IsString()
-    @IsNotEmpty()
+    // form-data มีปัญหา
+    // @IsString()
+    // @IsNotEmpty()
     image: string;
 }

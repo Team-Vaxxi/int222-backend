@@ -1,10 +1,11 @@
 import { VaccinesService } from './vaccines.service';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { CreateVaccineDto } from './dto/createvaccines.dto';
 import { Vaccines } from './vaccines.entity';
 import { UpdateVaccineDto } from './dto/updatevaccines.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { of } from 'rxjs';
+import { diskStorage } from 'multer';
+import { Helper } from 'src/shared/helper';
 
 
 @Controller('vaccines')
@@ -25,7 +26,14 @@ export class VaccinesController {
     }
 
     @Post()
-    async addVaccine(@Body() createProductDto: CreateVaccineDto) {
+    @UseInterceptors(FileInterceptor('image',{
+        storage: diskStorage({
+            destination: Helper.destinationPath,
+            filename: Helper.customFileName
+        })
+    }))
+    async addVaccine(@UploadedFile() image, @Body() createProductDto: CreateVaccineDto) {
+        createProductDto.image = image.filename;
         return await this.vaccinesService.addVaccine(createProductDto);
     }
 
@@ -40,17 +48,10 @@ export class VaccinesController {
         return await this.vaccinesService.removeVaccine(vaccineId);
     }
 
-// must to do: imagename with vaccineId
-// generate name vaccineId by back-end
-    @Post("upload")
-    @UseInterceptors(FileInterceptor('file', {
-        dest: './uploads'
-    }))
-    async uploadFile(@UploadedFile() file) {
-        console.log(file);
-        return of({ imagePath: file.filename });
+    @Get("images/:imagePath")
+    async seeUploadFile(@Param('imagePath') image, @Res() res) {
+        return res.sendFile(image, { root: './images'});
     }
-
 
 
 }
