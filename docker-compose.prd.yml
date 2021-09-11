@@ -3,7 +3,7 @@ services:
       build: .
       image: ghcr.io/team-vaxxi/int222-backend:prd
       volumes:
-        - ./backendImages:/src/images
+        - ./images:/app/images
 
 networks:
     default:
