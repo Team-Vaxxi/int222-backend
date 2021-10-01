@@ -2,10 +2,8 @@ name: int222-backend
 on:
   push:
     branches:
-      - dev
-  pull_request:
-    branches: 
       - main
+      - dev
 
 jobs:
   prepare:
