@@ -14,9 +14,9 @@ export class VaccinesService {
 
     async findAll(): Promise<Vaccines[]> {
         // fetch user that handle this vaccine
-        // return await this.vaccinesRepository.find({relations:['user']});
+        return await this.vaccinesRepository.find({relations:['user', 'locations']});
 
-        return await this.vaccinesRepository.find();
+        // return await this.vaccinesRepository.find();
     }
 
     async findOne(vaccineId: number): Promise<Vaccines> {
@@ -27,6 +27,7 @@ export class VaccinesService {
         return vaccine;
     }
 
+    // write exception
     async addVaccine(vaccineDto: CreateVaccineDto): Promise<Vaccines> {
         return this.vaccinesRepository.save(this.vaccinesRepository.create(vaccineDto));
     }

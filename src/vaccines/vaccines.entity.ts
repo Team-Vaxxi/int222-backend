@@ -20,8 +20,8 @@ export class Vaccines {
     image: string;
 
     // fetch user that handle this vaccine
-    // @OneToOne(() => Users, user => user.vaccine)
-    // user?: Users;
+    @OneToOne(() => Users, user => user.vaccine)
+    user?: Users;
 
     @ManyToMany(() => Locations)
     @JoinTable({

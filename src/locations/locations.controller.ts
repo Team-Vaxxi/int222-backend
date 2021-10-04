@@ -1,5 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { Vaccines } from 'src/vaccines/vaccines.entity';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import { UpdateLocationDto } from './dto/updatelocations.dto';
 import { Locations } from './locations.entity';
 import { LocationsService } from './locations.service';
 
@@ -17,5 +17,11 @@ export class LocationsController {
     @Get("/:locationId")
     async getLocationById(@Param("locationId") locationId:number): Promise<Locations> {
         return await this.locationsService.findOne(locationId);
+    }
+
+    @Put("/:locationId")
+    async updateLocationById(
+        @Param('locationId') locationId: number, @Body() updateLocationDto: UpdateLocationDto){
+        return await this.locationsService.updateLocation(locationId, updateLocationDto);
     }
 }
