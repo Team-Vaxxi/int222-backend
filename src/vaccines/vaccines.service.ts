@@ -28,8 +28,12 @@ export class VaccinesService {
     }
 
     // write exception
-    async addVaccine(vaccineDto: CreateVaccineDto): Promise<Vaccines> {
-        return this.vaccinesRepository.save(this.vaccinesRepository.create(vaccineDto));
+    async addVaccine(vaccineDto: CreateVaccineDto, imageName: string) {
+        const newVaccine = this.vaccinesRepository.create(vaccineDto)
+        newVaccine.image = imageName;
+        // console.log(newVaccine.locations);
+        
+        return this.vaccinesRepository.save(newVaccine);
     }
 
     async updateVaccine(vaccineId: number, updateVaccineDto: UpdateVaccineDto) {
