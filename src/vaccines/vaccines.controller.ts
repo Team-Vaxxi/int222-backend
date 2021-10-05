@@ -34,7 +34,8 @@ export class VaccinesController {
     }))
     async addVaccine(@UploadedFile() image, @Body() createProductDto: CreateVaccineDto) {
         createProductDto.image = image.filename;
-        return await this.vaccinesService.addVaccine(createProductDto);
+        const data = JSON.parse(createProductDto.vaccine)
+        return await this.vaccinesService.addVaccine(data);
     }
 
     @Put("/:vaccineId")
