@@ -23,7 +23,7 @@ export class Vaccines {
     @OneToOne(() => Users, user => user.vaccine)
     user?: Users;
 
-    @ManyToMany(() => Locations)
+    @ManyToMany(() => Locations, {onUpdate: 'CASCADE', onDelete: 'CASCADE'})
     @JoinTable({
         name: 'VaccinesLocations',
         joinColumn: {

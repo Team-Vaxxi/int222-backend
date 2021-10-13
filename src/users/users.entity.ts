@@ -38,11 +38,11 @@ export class Users {
     isOrder: string;
 
     
-    @OneToOne(() => Vaccines, { eager: true, onUpdate: 'CASCADE', onDelete: 'CASCADE'})
+    @OneToOne(() => Vaccines, { eager: true, onUpdate: 'CASCADE', onDelete: 'SET NULL'})
     @JoinColumn({ name: 'Vaccines_idVaccine', referencedColumnName: 'idVaccine'})
     vaccine?: Vaccines;
 
-    @OneToOne(() => Locations, { eager: true, onUpdate: 'CASCADE', onDelete: 'CASCADE'})
+    @OneToOne(() => Locations, { eager: true, onUpdate: 'CASCADE', onDelete: 'SET NULL'})
     @JoinColumn({ name: 'Locations_idLocation', referencedColumnName: 'idLocation'})
     location?: Locations;
 
