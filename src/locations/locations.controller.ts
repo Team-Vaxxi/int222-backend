@@ -21,9 +21,8 @@ export class LocationsController {
     }
 
     @Post()
-    async addLocation(@Body() CreateLocationDto: CreateLocationDto) {
-        const data = JSON.parse(CreateLocationDto.name)
-        return await this.locationsService.addLocation(data);
+    async addLocation(@Body() createLocationDto: CreateLocationDto) {
+        return await this.locationsService.addLocation(createLocationDto);
     }
 
     @Delete("/:locationId")
