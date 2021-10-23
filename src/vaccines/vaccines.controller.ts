@@ -34,14 +34,23 @@ export class VaccinesController {
     }))
     async addVaccine(@UploadedFile() image, @Body() createProductDto: CreateVaccineDto) {
         createProductDto.image = image.filename;
-        const data = JSON.parse(createProductDto.vaccine)
+        const data = JSON.parse(createProductDto.vaccine) as Vaccines
         return await this.vaccinesService.addVaccine(data, createProductDto.image);
     }
 
-    @Put("/:vaccineId")
+    @Put('/:vaccineId')
+    @UseInterceptors(FileInterceptor('image',{
+        storage: diskStorage({
+            destination: Helper.destinationPath,
+            filename: Helper.customFileName
+        })
+    }))
     async updateVaccineById(
-        @Param('vaccineId') vaccineId: number, @Body() updateVaccineDto: UpdateVaccineDto){
-        return await this.vaccinesService.updateVaccine(vaccineId, updateVaccineDto);
+        @Param('vaccineId') vaccineId: number, @UploadedFile() image, @Body() updateVaccineDto: UpdateVaccineDto) {
+        updateVaccineDto.image = image.filename
+        const data = JSON.parse(updateVaccineDto.vaccine) as Vaccines
+        // console.log(data);
+        return await this.vaccinesService.updateVaccine(vaccineId, data, updateVaccineDto.image);
     }
 
     @Delete("/:vaccineId")
