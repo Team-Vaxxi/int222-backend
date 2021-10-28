@@ -11,18 +11,6 @@ export class AuthService{
         private jwtService: JwtService
     ) { }
     
-    async   validateUser(idCard: string, password: string): Promise<any> {
-        console.log(`I'm auth service`);
-        const user = await this.userSerivce.findByIdCard(idCard)
-
-        if (user  && user.password == password) {
-            const { password, idCard, ...rest } = user;
-            return rest
-        }
-
-        return user
-    }
-
     async login(userDto: LoginUserDto) {
         const user = await this.userSerivce.findByIdCard(userDto.idCard)
         if (!user) throw new NotFoundException('User Not Found')
