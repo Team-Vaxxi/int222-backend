@@ -16,10 +16,19 @@ export class UsersService {
         return await this.usersRepository.find();
     }
 
-    async findOne(idUser: number): Promise<Users> {
-        const user = await this.usersRepository.findOne(idUser);
+    async findOne(condition: any): Promise<Users> {
+        const user = await this.usersRepository.findOne(condition);
         if (!user) {
-            throw new NotFoundException(`User #${idUser} not found`);
+            throw new NotFoundException(`User #${condition} not found`);
+        }
+        return user;
+    }
+
+    async findByIdCard(idCard: string): Promise<Users> {
+        console.log(`I'm userService findByIdCard`);
+        const user = await this.usersRepository.findOne({where: {idCard:`${idCard}`}});
+        if (!user) {
+            throw new NotFoundException(`User #${idCard} not found`);
         }
         return user;
     }

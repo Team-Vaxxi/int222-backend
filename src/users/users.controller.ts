@@ -20,6 +20,11 @@ export class UsersController {
     async getUserById(@Param("idUser") idUser:number): Promise<Users>{
         return await this.usersService.findOne(idUser);
     }
+    // Test Query IdCard
+    @Get("/idCard/:idCard")
+    async getUserByIdCard(@Param("idCard") idCard: string): Promise<Users>{
+        return await this.usersService.findByIdCard(idCard);
+    }
 
     @Post()
     async addUser(@Body() createUserDto: CreateUserDto) {

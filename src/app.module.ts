@@ -15,6 +15,7 @@ import { LocationsModule } from './locations/locations.module';
 import { LocationsController } from './locations/locations.controller';
 import { LocationsService } from './locations/locations.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
     VaccinesModule,
     LocationsModule,
+    AuthModule,
   ],
   controllers: [AppController, UsersController, VaccinesController, LocationsController],
   providers: [AppService, UsersService, VaccinesService, LocationsService],
