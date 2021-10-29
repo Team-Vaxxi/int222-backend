@@ -1,16 +1,14 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateVaccineDto } from './dto/createvaccines.dto';
 import { Repository } from 'typeorm';
 import { Vaccines } from './vaccines.entity';
-import { UpdateVaccineDto } from './dto/updatevaccines.dto';
 
 @Injectable()
 export class VaccinesService {
   constructor(
     @InjectRepository(Vaccines)
     private vaccinesRepository: Repository<Vaccines>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Vaccines[]> {
     // fetch user that handle this vaccine
@@ -31,6 +29,13 @@ export class VaccinesService {
 
   // write exception
   async addVaccine(vaccineDto: Vaccines, imageName: string) {
+    const vaccineNameIsExist = await this.vaccinesRepository.findOne({ where: { name: `${vaccineDto.name}` } })
+    if (vaccineNameIsExist) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'This vaccine name is already exist.'
+      }, HttpStatus.BAD_REQUEST)
+    }
     const newVaccine = this.vaccinesRepository.create(vaccineDto);
     newVaccine.image = imageName;
     // console.log(newVaccine.locations);
@@ -43,10 +48,22 @@ export class VaccinesService {
     if (!vaccine) {
       throw new NotFoundException(`Vaccine #${vaccineId} not found`);
     }
-    // updateVaccine
-    updateVaccineDto.image = imageName
-    Object.assign(vaccine, updateVaccineDto)
-    return await this.vaccinesRepository.save(vaccine);
+    const vaccineNameIsExist = await this.vaccinesRepository.findOne({ where: { name: `${updateVaccineDto.name}` } })
+    // vaccineNameIsExist but same vaccine
+    if (vaccine.name == updateVaccineDto.name) {
+      updateVaccineDto.image = imageName
+      Object.assign(vaccine, updateVaccineDto)
+      return await this.vaccinesRepository.save(vaccine);
+    }
+    // vaccineNameIsExsit but didn't same vaccine
+    if (vaccineNameIsExist) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'This vaccine name is already exist.'
+    }, HttpStatus.BAD_REQUEST)
+    }
+
+
   }
 
   async removeVaccine(vaccineId: number) {

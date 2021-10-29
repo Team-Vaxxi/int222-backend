@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createusers.dto';
@@ -12,7 +12,7 @@ export class UsersService {
         @InjectRepository(Users)
         private usersRepository: Repository<Users>,
     ) { }
-    
+
     async findAll(): Promise<Users[]> {
         return await this.usersRepository.find();
     }
@@ -26,7 +26,7 @@ export class UsersService {
     }
 
     async findByIdCard(idCard: string): Promise<Users> {
-        const user = await this.usersRepository.findOne({where: {idCard:`${idCard}`}});
+        const user = await this.usersRepository.findOne({ where: { idCard: `${idCard}` } });
         if (!user) {
             throw new NotFoundException(`User #${idCard} not found`);
         }
@@ -38,6 +38,13 @@ export class UsersService {
     }
 
     async addUser(userDto: CreateUserDto) {
+        const idCardIsExist = await this.usersRepository.findOne({ where: { idCard: `${userDto.idCard}` } })
+        if (idCardIsExist) {
+            throw new HttpException({
+                status: HttpStatus.BAD_REQUEST,
+                error: 'This idCard is already exist.'
+            }, HttpStatus.BAD_REQUEST)
+        }
         userDto.password = await bcrypt.hash(userDto.password, 12);
 
         // default value
@@ -53,7 +60,19 @@ export class UsersService {
         if (!user) {
             throw new NotFoundException(`User #${idUser} not found`);
         }
-        return this.usersRepository.update(idUser, updateUserDto);
+        const idCardIsExist = await this.usersRepository.findOne({ where: { idCard: `${updateUserDto.idCard}` } })
+        // idCardIsExist but same user
+        if (user.idCard == updateUserDto.idCard) {
+            return this.usersRepository.update(idUser, updateUserDto);
+        }
+        // IdCardIsExist but didn't same user
+        if (idCardIsExist) {
+            throw new HttpException({
+                status: HttpStatus.BAD_REQUEST,
+                error: 'This idCard is already exist.'
+            }, HttpStatus.BAD_REQUEST)
+        }
+
     }
 
     async removeUser(idUser: number) {
