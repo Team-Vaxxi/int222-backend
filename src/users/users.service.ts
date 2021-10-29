@@ -39,7 +39,13 @@ export class UsersService {
 
     async addUser(userDto: CreateUserDto) {
         userDto.password = await bcrypt.hash(userDto.password, 12);
-        return this.usersRepository.save(this.usersRepository.create(userDto));
+
+        // default value
+        const newUser = this.usersRepository.create(userDto)
+        newUser.role = 'user'
+        newUser.isOrder = '0'
+
+        return this.usersRepository.save(newUser);
     }
 
     async updateUser(idUser: number, updateUserDto: UpdateUserDto) {
