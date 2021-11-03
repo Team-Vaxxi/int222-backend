@@ -6,21 +6,11 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  const cors = {
-    origin: [
-       process.env.FRONTEND_URL,
-    ],
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
+  app.enableCors({
+    origin: process.env.FRONTEND_URL,
     credentials: true,
-    allowedHeaders: [
-      'Accept',
-      'Content-Type',
-      'Authorization',
-    ]
-  };
-  app.enableCors(cors);
+    methods: 'GET,PUT,POST,DELETE',
+  });
   // localhost used 4000 instead
   await app.listen(3000);
 }
