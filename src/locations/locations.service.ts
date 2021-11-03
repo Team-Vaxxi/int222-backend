@@ -26,6 +26,7 @@ export class LocationsService {
 
     async addLocation(locationDto: CreateLocationDto) {
         const locationNameIsExist = await this.locationsRepository.findOne({ where: { name: `${locationDto.name}` } })
+        console.log(locationNameIsExist);
         if (locationNameIsExist) {
             throw new HttpException({
                 status: HttpStatus.BAD_REQUEST,
