@@ -60,6 +60,16 @@ export class UsersService {
         if (!user) {
             throw new NotFoundException(`User #${idUser} not found`);
         }
+        // change this logic next time
+
+        // not changed pwd then front-end sent null on input pwd
+        if (updateUserDto.password == null) {
+            updateUserDto.password = user.password
+        }
+        // change pwd then front-end sent real text on input
+        if (updateUserDto.password != null) {
+            updateUserDto.password = await bcrypt.hash(updateUserDto.password, 12);
+        }
         const idCardIsExist = await this.usersRepository.findOne({ where: { idCard: `${updateUserDto.idCard}` } })
         // idCardIsExist but same user
         if (user.idCard == updateUserDto.idCard) {
