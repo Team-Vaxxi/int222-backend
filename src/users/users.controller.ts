@@ -1,4 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { ROLES } from 'src/auth/authorization/ROLES';
+import { Roles } from 'src/auth/authorization/roles.decorator';
+import { RolesGuard } from 'src/auth/authorization/roles.guard';
+import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
 import { CreateUserDto } from './dto/createusers.dto';
 import { UpdateUserDto } from './dto/updateusers.dto';
 import { Users } from './users.entity';
@@ -31,12 +35,16 @@ export class UsersController {
         return await this.usersService.addUser(createUserDto);
     }
 
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles('role', ROLES.ADMIN)
     @Put("/:idUser")
     async updateUserById(
         @Param('idUser') idUser: number, @Body() updateUserDto: UpdateUserDto){
         return await this.usersService.updateUser(idUser, updateUserDto);
     }
-
+    
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles('role', ROLES.ADMIN)
     @Delete("/:idUser")
     async removeUserById(@Param("idUser") idUser: number) {
         return await this.usersService.removeUser(idUser);

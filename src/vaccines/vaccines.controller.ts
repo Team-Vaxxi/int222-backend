@@ -1,11 +1,15 @@
 import { VaccinesService } from './vaccines.service';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CreateVaccineDto } from './dto/createvaccines.dto';
 import { Vaccines } from './vaccines.entity';
 import { UpdateVaccineDto } from './dto/updatevaccines.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Helper } from 'src/shared/helper';
+import { Roles } from 'src/auth/authorization/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
+import { ROLES } from 'src/auth/authorization/ROLES';
+import { RolesGuard } from 'src/auth/authorization/roles.guard';
 
 
 @Controller('vaccines')
@@ -25,6 +29,8 @@ export class VaccinesController {
         return await this.vaccinesService.findOne(vaccineId);
     }
 
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles('role', ROLES.ADMIN)
     @Post()
     @UseInterceptors(FileInterceptor('image',{
         storage: diskStorage({
@@ -38,6 +44,8 @@ export class VaccinesController {
         return await this.vaccinesService.addVaccine(data, createProductDto.image);
     }
 
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles('role', ROLES.ADMIN)
     @Put('/:vaccineId')
     @UseInterceptors(FileInterceptor('image',{
         storage: diskStorage({
@@ -52,7 +60,9 @@ export class VaccinesController {
         // console.log(data);
         return await this.vaccinesService.updateVaccine(vaccineId, data, updateVaccineDto.image);
     }
-
+    
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles('role', ROLES.ADMIN)
     @Delete("/:vaccineId")
     async removeVaccineById(@Param("vaccineId") vaccineId: number) {
         return await this.vaccinesService.removeVaccine(vaccineId);
