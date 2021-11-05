@@ -65,9 +65,8 @@ export class UsersService {
         // not changed pwd then front-end sent null on input pwd
         if (updateUserDto.password == null) {
             updateUserDto.password = user.password
-        }
+        } else {
         // change pwd then front-end sent real text on input
-        if (updateUserDto.password != null) {
             updateUserDto.password = await bcrypt.hash(updateUserDto.password, 12);
         }
         const idCardIsExist = await this.usersRepository.findOne({ where: { idCard: `${updateUserDto.idCard}` } })

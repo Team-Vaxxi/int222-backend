@@ -29,8 +29,6 @@ export class UpdateUserDto {
     @IsNotEmpty()
     idCard: string;
     
-    @IsString()
-    @IsNotEmpty()
     password: string;
     
     @IsString()
