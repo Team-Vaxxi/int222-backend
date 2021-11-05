@@ -91,3 +91,4 @@ jobs:
         script: |
           docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml pull
           docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml up -d
+          docker image prune -f
