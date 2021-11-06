@@ -71,7 +71,7 @@ export class UsersService {
         }
         const idCardIsExist = await this.usersRepository.findOne({ where: { idCard: `${updateUserDto.idCard}` } })
         // idCardIsExist but same user
-        if (user.idCard == updateUserDto.idCard) {
+        if (user.idCard == updateUserDto.idCard || !idCardIsExist) {
             return this.usersRepository.update(idUser, updateUserDto);
         }
         // IdCardIsExist but didn't same user
