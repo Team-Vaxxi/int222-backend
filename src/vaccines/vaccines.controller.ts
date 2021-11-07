@@ -29,8 +29,8 @@ export class VaccinesController {
         return await this.vaccinesService.findOne(vaccineId);
     }
 
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles('role', ROLES.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('role', ROLES.ADMIN)
     @Post()
     @UseInterceptors(FileInterceptor('image',{
         storage: diskStorage({
@@ -44,8 +44,8 @@ export class VaccinesController {
         return await this.vaccinesService.addVaccine(data, createProductDto.image);
     }
 
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles('role', ROLES.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('role', ROLES.ADMIN)
     @Put('/:vaccineId')
     @UseInterceptors(FileInterceptor('image',{
         storage: diskStorage({
@@ -61,8 +61,8 @@ export class VaccinesController {
         return await this.vaccinesService.updateVaccine(vaccineId, data, updateVaccineDto.image);
     }
     
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles('role', ROLES.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('role', ROLES.ADMIN)
     @Delete("/:vaccineId")
     async removeVaccineById(@Param("vaccineId") vaccineId: number) {
         return await this.vaccinesService.removeVaccine(vaccineId);

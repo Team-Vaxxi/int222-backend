@@ -24,22 +24,22 @@ export class LocationsController {
         return await this.locationsService.findOne(locationId);
     }
 
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles('role', ROLES.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('role', ROLES.ADMIN)
     @Post()
     async addLocation(@Body() createLocationDto: CreateLocationDto) {
         return await this.locationsService.addLocation(createLocationDto);
     }
 
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles('role', ROLES.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('role', ROLES.ADMIN)
     @Delete("/:locationId")
     async removeLocationById(@Param("locationId") idLocation: number) {
         return await this.locationsService.removeLocation(idLocation);
     }
 
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles('role', ROLES.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('role', ROLES.ADMIN)
     @Put("/:locationId")
     async updateLocationById(
         @Param('locationId') locationId: number, @Body() updateLocationDto: UpdateLocationDto){
