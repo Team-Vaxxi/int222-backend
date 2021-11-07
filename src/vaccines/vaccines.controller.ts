@@ -19,11 +19,13 @@ export class VaccinesController {
 
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getAllVaccines(): Promise<Vaccines[]> {
         return await this.vaccinesService.findAll();
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get("/:vaccineId")
     async getVaccineById(@Param("vaccineId") vaccineId:number): Promise<Vaccines>{
         return await this.vaccinesService.findOne(vaccineId);

@@ -21,19 +21,14 @@ export class UsersController {
     async getAllUsers(): Promise<Users[]> {
         return await this.usersService.findAll();
     }
-
+    // Register
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('role', ROLES.ADMIN)
     @Get("/:idUser")
     async getUserById(@Param("idUser") idUser:number): Promise<Users>{
         return await this.usersService.findOne(idUser);
     }
-    // Test Query IdCard
-    // @Get("/idCard/:idCard")
-    // async getUserByIdCard(@Param("idCard") idCard: string): Promise<Users>{
-    //     return await this.usersService.findByIdCard(idCard);
-    // }
-
+    // Register
     @Post()
     async addUser(@Body() createUserDto: CreateUserDto) {
         return await this.usersService.addUser(createUserDto);
@@ -48,14 +43,14 @@ export class UsersController {
         return await this.usersService.updateUser(idUser, updateUserDto);
     }
 
-    // Update only Vaccine for user
+    // Update only Vaccine for USER
+    @UseGuards(JwtAuthGuard)
     @Put("add/:idUser")
     async updateVaccineUser(
         @Param('idUser') idUser: number, @Body() updateUserDto: UpdateUserDto){
         return await this.usersService.updateVaccineUser(idUser, updateUserDto);
     }
 
-    
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('role', ROLES.ADMIN)
     @Delete("/:idUser")

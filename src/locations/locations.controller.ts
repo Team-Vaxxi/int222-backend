@@ -14,11 +14,15 @@ export class LocationsController {
         
     }
 
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('role', ROLES.ADMIN)
     @Get()
     async getAllLocations(): Promise<Locations[]> {
         return await this.locationsService.findAll();
     }
 
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('role', ROLES.ADMIN)
     @Get("/:locationId")
     async getLocationById(@Param("locationId") locationId:number): Promise<Locations> {
         return await this.locationsService.findOne(locationId);
