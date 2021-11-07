@@ -54,7 +54,7 @@ export class UsersService {
 
         return this.usersRepository.save(newUser);
     }
-
+    // updateUser by ADMIN
     async updateUser(idUser: number, updateUserDto: UpdateUserDto) {
         const user = await this.usersRepository.findOne(idUser);
         if (!user) {
@@ -66,7 +66,7 @@ export class UsersService {
         if (updateUserDto.password == null) {
             updateUserDto.password = user.password
         } else {
-        // change pwd then front-end sent real text on input
+            // change pwd then front-end sent real text on input
             updateUserDto.password = await bcrypt.hash(updateUserDto.password, 12);
         }
         const idCardIsExist = await this.usersRepository.findOne({ where: { idCard: `${updateUserDto.idCard}` } })
@@ -82,6 +82,30 @@ export class UsersService {
             }, HttpStatus.BAD_REQUEST)
         }
 
+    }
+    // updateUser by USER
+    async updateVaccineUser(idUser: number, updateUserDto: UpdateUserDto) {
+        const user = await this.usersRepository.findOne(idUser);
+        if (!user) {
+            throw new NotFoundException(`User #${idUser} not found`);
+        }
+        // check user already have vaccine?
+        if (user.vaccine != null) {
+            throw new Error(`User #${idUser} already have vaccine`);
+
+        } else {
+            // replace original data to protect someone who API to change personal info. other users
+            updateUserDto.name = user.name
+            updateUserDto.surname = user.surname
+            updateUserDto.gender = user.gender
+            updateUserDto.address = user.address
+            updateUserDto.dob = user.dob
+            updateUserDto.tel = user.tel
+            updateUserDto.idCard = user.idCard
+            updateUserDto.password = user.password
+            updateUserDto.isOrder = '1'
+        }
+        return this.usersRepository.update(idUser, updateUserDto)
     }
 
     async removeUser(idUser: number) {
