@@ -20,11 +20,13 @@ jobs:
         echo "::set-output name=DB_URL::${ENV_NAME}_DB_URL";
         echo "::set-output name=DB_USERNAME::${ENV_NAME}_DB_USERNAME";
         echo "::set-output name=DB_PASSWORD::${ENV_NAME}_DB_PASSWORD";
+        echo "::set-output name=FRONTEND_URL::${ENV_NAME}_FRONTEND_URL";
 
     outputs:
       DB_URL: ${{ steps.prepare-step.outputs.DB_URL }}
       DB_USERNAME: ${{ steps.prepare-step.outputs.DB_USERNAME }}
       DB_PASSWORD: ${{ steps.prepare-step.outputs.DB_PASSWORD }}
+      FRONTEND_URL: ${{ steps.prepare-step.outputs.FRONTEND_URL }}
 
   build:
     needs: prepare
@@ -33,6 +35,7 @@ jobs:
       DB_URL: ${{ needs.prepare.outputs.DB_URL }}
       DB_USERNAME: ${{ needs.prepare.outputs.DB_USERNAME }}
       DB_PASSWORD: ${{ needs.prepare.outputs.DB_PASSWORD }}
+      FRONTEND_URL: ${{ needs.prepare.outputs.FRONTEND_URL }}
 
     steps:
     - name: Set env
@@ -47,6 +50,7 @@ jobs:
         echo DB_URL=${{ secrets[env.DB_URL] }} >> .env
         echo DB_USERNAME=${{ secrets[env.DB_USERNAME] }} >> .env
         echo DB_PASSWORD=${{ secrets[env.DB_PASSWORD] }} >> .env
+        echo FRONTEND_URL=${{ secrets[env.FRONTEND_URL] }} >> .env
 
     - name: Login to Github Docker Registry
       uses: docker/login-action@v1
@@ -87,3 +91,4 @@ jobs:
         script: |
           docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml pull
           docker-compose -f ~/int222-related/backend/${{ env.ENV_NAME }}/docker-compose.${{ env.ENV_NAME }}.yml up -d
+          docker image prune -f
